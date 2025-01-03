@@ -1,7 +1,7 @@
 using Test
 using Clustering
 using Distances
-include("test_helpers.jl")
+#include("test_helpers.jl")  # Already included in previous tests, but might need to be added back if test order is changed
 
 @testset "dbscan() (DBSCAN clustering)" begin
 
@@ -33,14 +33,20 @@ end
     R = dbscan(X, 1.0)
     @test nclusters(R) == 2
 end
-@testset "Simple 2D test case with limited points trivial case" begin
-    X = zeros(2,1)  # At minimum dbscan needs a matrix and will not work with just a vector, but matrix could be Nx1
+@testset "Trivial 2D test case with one point" begin
+    X = zeros(2,1)  # At minimum dbscan needs a matrix and will not work with just a vector, but matrix could be Dx1
     X[:,1] = [10.0       ;
           0.0      ]
     R = dbscan(X, 20)
     @test nclusters(R) == 1
     R = dbscan(X, 1.0)
     @test nclusters(R) == 1
+end
+
+@testset "Trvial 2D test case with no points" begin
+    X = zeros(2,0)  # At minimum dbscan needs a matrix and will not work with just a vector, but matrix could be Dx0
+    R = dbscan(X, 20)
+    @test nclusters(R) == 0
 end
 
 @testset "clustering synthetic data with 3 clusters" begin
