@@ -14,6 +14,35 @@ include("test_helpers.jl")
     @test @inferred(dbscan(randn(2, 2), 0.5, metric=nothing, min_neighbors=1)) isa DbscanResult
 end
 
+@testset "Simple 2D test case" begin
+    X = [10.0   0.0    10.5 ;
+          0.0   10.0    0.1]
+    R = dbscan(X, 20)
+    @test nclusters(R) == 1
+    R = dbscan(X, 1.0)
+    @test nclusters(R) == 2
+    R = dbscan(X, 0.1)
+    @test nclusters(R) == 3
+end
+
+@testset "Simple 2D test case with limited points" begin
+    X = [10.0   0.0     ;
+          0.0   10.0   ]
+    R = dbscan(X, 20)
+    @test nclusters(R) == 1
+    R = dbscan(X, 1.0)
+    @test nclusters(R) == 2
+end
+@testset "Simple 2D test case with limited points trivial case" begin
+    X = zeros(2,1)  # At minimum dbscan needs a matrix and will not work with just a vector, but matrix could be Nx1
+    X[:,1] = [10.0       ;
+          0.0      ]
+    R = dbscan(X, 20)
+    @test nclusters(R) == 1
+    R = dbscan(X, 1.0)
+    @test nclusters(R) == 1
+end
+
 @testset "clustering synthetic data with 3 clusters" begin
     Random.seed!(34568)
 
